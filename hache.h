@@ -32,7 +32,7 @@ struct							s_ap
   	uint8_t						decode;
   uint64_t				x;
   uint32_t		l;
-  uint32_t		r;
+  uint32_t		ar;
   uint64_t	ex_r;
   uint64_t		*keys;
   uint64_t		in_key;
@@ -105,6 +105,8 @@ struct							s_ap
 	uint32_t					b_ind;
 };
 
+
+void    des(t_flags *f);
 uint8_t s1(uint8_t in);
 uint8_t s2(uint8_t in);
 uint8_t s3(uint8_t in);

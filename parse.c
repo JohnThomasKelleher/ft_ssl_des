@@ -20,19 +20,20 @@ void			fn(void (*fun[8]) (t_flags *f))
 	fun[3] = sha_512;
 	fun[4] = sha_512;
 	fun[5] = base64;
-	fun[6] = NULL;
+	fun[6] = ft_des;
+	fun[7] = NULL;
 }
 
 int				optns(t_flags *f, char **argv)
 {
 	const char	*op[] = {"md5", "sha256", "sha224",
-				 "sha512", "sha384", "base64", NULL};
+				 "sha512", "sha384", "base64", "des",  NULL};
 	void		(*fun[8]) (t_flags *f);
 	int			j;
 
 	fn(fun);
 	j = 0;
-	while (j <= 5)
+	while (j <= 6)
 	{
 		if (ft_strcmp(op[j], argv[f->i]) == 0)
 		{

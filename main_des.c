@@ -13,7 +13,7 @@ void	expansion_des(t_flags *f)
 
   while (i < 64)
     {
-      r_hold = f->r;
+      r_hold = f->ar;
       r_hold <<= a[i];
       r_hold >>= 31;
       x = r_hold;
@@ -30,15 +30,15 @@ void	s_boxes(t_flags *f)
   uint8_t (boxes[8]) (uint8_t in) = { s1, s2, s3, s4, s5, s6, s7 };
   int i = 7;
   uint8_t in = 0;
-  f->r = 0;
+  //f->ar = 0;
 
   while (i > -1)
     {
       in = (f->ex_r % 64);
       f->ex_r /= 64;
       in = boxes[i](in);
-      f->r <<= 4;
-      f->r += in;
+      f->ar <<= 4;
+      f->ar += in;
       
       i--;
     }
@@ -47,7 +47,24 @@ void	s_boxes(t_flags *f)
 
 void str8_d_box(t_flags *f)
 {
-  
+  int a[32] = {
+    15, 6, 19, 20, 28, 11, 27, 16, 0, 14, 22, 25, 4, 17, 30, 9, 1, 7, 23, 13, 31, 26, 2, 8, 18 , 12, 29, 5, 21, 10, 3, 24
+  };
+  int i = 0; //is this right
+  uint32_t x;
+  uint32_t rev;
+
+  while (i < 32)
+    {
+      x = f->ar;
+      x <<= a[i];
+      x >>= 31;
+      x <<= (32 - (i) - 1);//
+      rev |= x;
+
+      i++;
+    }
+  f->ar= rev;
 }
 
 void	16_rounds(t_flags *f)
@@ -56,6 +73,7 @@ void	16_rounds(t_flags *f)
   while(i < 16)
     {
       expansion_des(t_flags *f); //does expansion from f->r to f->ex_r
+      f->ar = 0;
       f->ex_r ^= f->keys[i];
       s_boxes(t_flags *f); //does sboxes to go from f->ex_r to f->r
       str8_d_box(t_flags *f); //does straight dboxing yo
@@ -66,10 +84,11 @@ void	16_rounds(t_flags *f)
 
 void	print_cipher(t_flags *f)
 {
-  
+  printf("%u\n", f->ar);
+  return ;
 }
 
-void	des(t_flags *f)
+void	ft_des(t_flags *f)
 {
   f->keys = (int*)malloc(sizeof(int) * 16);
   generate_keys_des(f);
