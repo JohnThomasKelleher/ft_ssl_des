@@ -65,14 +65,53 @@ void			initi(t_flags *f)
 	f->b = 0xefcdab89;
 	f->c = 0x98badcfe;
 	f->d = 0x10325476;
+	f->x_hold = 0;
+	f->invalid_key = 0;
 }
 
-void			ass_op(void (**op) (t_flags *f, char **argv))
+void	handle_flags(t_flags *f, char **a)
 {
-	op['p'] = ft_stdin;
-	op['q'] = ft_flags;
-	op['r'] = ft_flags;
-	op['s'] = ft_strin;
-	op['e'] = ft_stdin;
-	op['d'] = ft_stdin;
+  if (a[f->i][1] == 'a')
+    f->a = 1;
+  
+}
+
+void set_hex(t_flags *f, char **a)
+{
+  int dig[124];
+  int j = (f->i + 1);
+  int i = 0;
+  uint64_t ret= 0;
+  
+  ass_dig(dig);
+  while (a[j][i] != '\0')
+    {
+      ret *= 16;
+      if (!HEX(a[j][i]))
+        {
+          f->invalid_key = 1;
+          return ;
+        }
+      ret += dig[(int)a[j][i]];
+      i++;
+    }
+  f->x = (a[f->i][1] == 'v') ? (ret) : (f->x);
+  f->in_key = (a[f->i][1] == 'k') ? (ret) : (f->in_key);
+}
+
+
+
+void			ass_op(t_flags *f)
+{
+  f->op = malloc(8 * 127);
+	f->op['p'] = ft_stdin;
+	f->op['q'] = ft_flags;
+	f->op['r'] = ft_flags;
+	f->op['s'] = ft_strin;
+	f->op['e'] = ft_stdin;
+	f->op['d'] = ft_stdin;
+	f->op['i'] = handle_des;
+	f->op['a'] = handle_flags;
+	f->op['k'] = set_hex;
+	f->op['v'] = set_hex;
 }

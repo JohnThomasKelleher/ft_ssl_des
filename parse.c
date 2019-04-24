@@ -21,19 +21,20 @@ void			fn(void (*fun[8]) (t_flags *f))
 	fun[4] = sha_512;
 	fun[5] = base64;
 	fun[6] = ft_des;
-	fun[7] = NULL;
+	fun[7] = ft_des;
+	fun[8] = NULL;
 }
 
 int				optns(t_flags *f, char **argv)
 {
 	const char	*op[] = {"md5", "sha256", "sha224",
-				 "sha512", "sha384", "base64", "des",  NULL};
-	void		(*fun[8]) (t_flags *f);
+				 "sha512", "sha384", "base64", "des", "des-cbc",  NULL};
+	void		(*fun[9]) (t_flags *f);
 	int			j;
 
 	fn(fun);
 	j = 0;
-	while (j <= 6)
+	while (j <= 7)
 	{
 		if (ft_strcmp(op[j], argv[f->i]) == 0)
 		{
@@ -47,13 +48,13 @@ int				optns(t_flags *f, char **argv)
 	return (0);
 }
 
-void			parse(t_flags *f, char **a, void (**op) (t_flags *f, char **a))
+void			parse(t_flags *f, char **a)
 {
-	while (a[f->i] != NULL)
+	while (f->i < f->argc)
 	{
 		f->hold = f->i;
 		if (a[f->i][0] == '-' && (f->recent_letter = a[f->i][1]))
-			op[(int)(a[f->i][1])](f, a);
+			f->op[(int)(a[f->i][1])](f, a);
 		else if (!optns(f, a))
 		{
 			if (0 <= (f->fd = open(a[f->i], O_RDONLY)))
@@ -66,12 +67,12 @@ void			parse(t_flags *f, char **a, void (**op) (t_flags *f, char **a))
 			else
 				ft_printf("%s: No such file or directory\n", a[f->i]);
 			f->i = f->hold;
-			while (a[++f->i] != NULL)
+			while (++f->i < f->argc)
 				ft_printf("%s: No such file or directory\n", a[f->i]);
 			return ;
 		}
-		f->i = f->hold + 1;
+		f->i = (NOT_DES(f->alg)) ? (f->hold + 1) : (f->i + 1);
 	}
-	if (f->never && f->alg != ft_err && (f->is_ne = 1))
+	if (f->never && f->alg != ft_err && (f->is_ne = 1) && NOT_DES(f->alg))
 		ft_stdin(f, a);
 }

@@ -14,7 +14,7 @@
 
 t_flags				*help_main(t_flags *f)
 {
-	f = malloc(sizeof(t_flags));
+  //f = malloc(sizeof(t_flags));
 	f->never = 1;
 	f->is_ne = 0;
 	f->p = 0;
@@ -28,6 +28,7 @@ t_flags				*help_main(t_flags *f)
 	f->alg = ft_err;
 	f->i = 1;
 	f->decode = 0;
+	f->ecb = 0;
 	return (f);
 }
 
@@ -35,18 +36,18 @@ int					main(int argc, char **argv)
 {
 	t_flags			*f;
 	int				i;
-	void			(*op[127]) (t_flags *f, char **argv);
 
-	ass_op(op);
 	argv[argc] = NULL;
 	i = 0;
-	f = malloc(sizeof(t_flags));
+	f = malloc(sizeof(t_flags) * 2);
+	ass_op(f);
+	f->argc = argc;
 	if (argc == 1)
 	{
 		ft_err(f);
 		return (1);
 	}
 	f = help_main(f);
-	parse(f, argv, op);
+	parse(f, argv);
 	return (0);
 }
