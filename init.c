@@ -30,6 +30,7 @@ int				sha_init_abc(t_flags *f)
 	f->six = f->h5;
 	f->seven = f->h6;
 	f->eight = f->h7;
+	f->a_op = 0;
 	return (0);
 }
 
@@ -72,7 +73,7 @@ void			initi(t_flags *f)
 void	handle_flags(t_flags *f, char **a)
 {
   if (a[f->i][1] == 'a')
-    f->a = 1;
+    f->a_op = 1;
   
 }
 
@@ -95,7 +96,7 @@ void set_hex(t_flags *f, char **a)
       ret += dig[(int)a[j][i]];
       i++;
     }
-  f->x = (a[f->i][1] == 'v') ? (ret) : (f->x);
+  f->x = (a[f->i][1] == 'v') ? (ret) : (f->x); 
   f->in_key = (a[f->i][1] == 'k') ? (ret) : (f->in_key);
 }
 
@@ -104,7 +105,7 @@ void set_hex(t_flags *f, char **a)
 void			ass_op(t_flags *f)
 {
   f->op = malloc(8 * 127);
-	f->op['p'] = ft_stdin;
+	f->op['p'] = handle_pass;
 	f->op['q'] = ft_flags;
 	f->op['r'] = ft_flags;
 	f->op['s'] = ft_strin;

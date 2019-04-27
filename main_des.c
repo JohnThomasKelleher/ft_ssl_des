@@ -35,13 +35,29 @@ void	expansion_des(t_flags *f)
   //printf("after exp: %llu\n", f->ex_r);
 }
 
+void	reverse_half_bytes(t_flags *f)
+{
+  int i  = 0;
+  uint32_t hold = 0;
+  uint32_t other_hold = 0;
+
+  while (i < 8)
+    {
+      other_hold = (f->f_hold & 0xF);
+      f->f_hold >>= 4;
+      hold <<= 4;
+      hold += other_hold;
+      i++;
+    }
+  f->f_hold = hold;
+}
+
 void	s_boxes(t_flags *f)
 {
-  uint8_t (*boxes[8]) (uint8_t) = { s1, s2, s3, s4, s5, s6, s7 };
-  int i = 6;
+  uint8_t (*boxes[8]) (uint8_t) = { s1, s2, s3, s4, s5, s6, s7, s8 };
+  int i = 7;
   uint8_t in = 0;
   //f->ar = 0;
-
   while (i > -1)
     {
       in = (f->ex_r % 64);
@@ -52,6 +68,8 @@ void	s_boxes(t_flags *f)
       
       i--;
     }
+  //printf("before flipping half bytes: %x\n", f->f_hold);
+  reverse_half_bytes(f);
   
 }
 
@@ -105,9 +123,9 @@ void	ft_16_rounds(t_flags *f)
       expansion_des(f); //does expansion from f->r to f->ex_r
       //f->ar = 0;
       f->ex_r ^= f->keys[i];
-      printf("i: %d, before sbox: %llx, ", i, f->ex_r);
+      //printf("i: %d, before sbox: %llx, ", i, f->ex_r);
       s_boxes(f); //does sboxes to go from f->ex_r to f->f_hold
-      printf("after sbox: %x\n", f->f_hold);
+      //printf("after sbox: %x\n", f->f_hold);
       str8_d_box(f); //does straight dboxing on f_hold
       f->l ^= f->f_hold;
       if (i != 15)
@@ -123,11 +141,16 @@ int	print_cipher(t_flags *f)
   int i = 0;
   char *x;
   x = (char*) &f->x;
+  flip_buf(x);
   while (i < 8)
     {
-      printf("%02hhx", x[i]); 
+      write(1, &x[i], 1);
+      write(1, " ", 1);//delete
+      //printf("%02hhx", x[i]); 
       i++;
     }
+  if (f->flush)
+    write(1, "\n", 1);
   return (0);
 }
 
@@ -141,7 +164,7 @@ void pkcs7_pad(t_flags *f)
       f->ret++;
     }
 } 
-
+ 
 void	handle_des(t_flags *f, char **a)
 {
   f->i++;
@@ -150,13 +173,15 @@ void	handle_des(t_flags *f, char **a)
       printf("sorry, no file there\n");
       return ;
     }
+  //f->op['p'] = pbkdf;
   while (a[f->i])
     {
       if (a[f->i][0] == '-')
 	f->op[(int)(a[f->i][1])](f, a);
+      optns(f, a);
       f->i++;
     }
-  ft_des(f);
+  f->alg(f);
 }
 
 void	flip_buf(char *buf)
@@ -183,8 +208,91 @@ void   handle_shit(char *buf, t_flags *f)
   hold = (uint64_t*) buf;
   flip_buf(buf);
   //printf("before, data: %llu, as string: %s, after:", hold[0], buf);
-  hold[0] ^= f->x;
+  hold[0] ^= (f->ecb) ? (0) : (f->x);
   //printf("data: %llu, iv: %llu\n", hold[0], f->x);
+}
+
+void	putnstr(char *a, int len)
+{
+  int i = 0;
+
+  while (i < len)
+  {
+    write(1, &a[i], 1);
+    i++;
+  }
+}
+
+void	base64_out(char *b, t_flags *f)
+{
+  uint32_t *c;
+  uint32_t hold;
+  char out;
+  int i = 0;
+  char s[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+  
+  //printf("c[0]: %x\n", c[0]);
+  reverse_four_bytes(b);
+  c = (uint32_t*)b;
+  hold = (c[0]);
+  //printf("c[0] %x\n", c[0]);
+  while (i <= 3)
+    {
+      out = ((c[0] >> (26 - 6 * i)) & 0x3f);
+
+      //printf("hold: %x\n", hold);
+      //hold <<= 6;
+      //printf(":::%u:::", f->ret);
+      if (f->orig_len == 64)
+	write(1, "\n", 1);
+      if (hold)
+	f->orig_len += write(1, &s[(int)out], 1);
+      else
+	write(1, "=", 1);
+      hold <<= 6;
+      i++;
+    }
+}
+
+void	print_cipherB64(t_flags *f)
+{
+  static char b[4];
+  int place_in_x = 0;
+  static int place_in_b;
+  uint32_t *x; 
+  x = (uint32_t*)b;
+//if 0, then two loops, 2 stored
+  //if 1, then three loops, 0 stored
+  //if 2, then three loops, 1 stored
+  while (place_in_x <= 7)
+    {
+      b[place_in_b] = (f->x >> (56 - 8 * place_in_x)) & 0xff;
+      place_in_x++;
+      place_in_b++;
+      if (place_in_b == 3)
+	{
+	  place_in_b = 0;
+	  b[3] = '\0';
+	  //printf("bvar: %x\n", x[0]);
+	  base64_out(b, f);
+	}
+    }
+  if (f->flush && place_in_b)
+    {
+      while (place_in_b <= 3)
+	b[place_in_b++] = 0;
+      //printf("bvar: %x\n", x[0]);
+      base64_out(b, f);
+    }
+  if (f->flush)
+    write(1, "\n", 1);
+}
+
+void	ft_des_ecb(t_flags *f)
+{
+  f->ecb = 1;
+  ft_des(f);
 }
 
 void	ft_des(t_flags *f)
@@ -193,7 +301,7 @@ void	ft_des(t_flags *f)
   char buf[9];
   int i = 0;
 
-  f->keys = (uint64_t*)malloc(sizeof(int) * 16);
+  f->keys = (uint64_t*)malloc(sizeof(int) * 17);
   generate_keys_des(f);
   while (8 == (f->ret = read(f->fd, buf, 8)))
     {
@@ -204,10 +312,12 @@ void	ft_des(t_flags *f)
   initial_perm(f);
   ft_16_rounds(f);
   final_perm(f);
-  (f->ecb) ? (print_cipher(f)) : (0);
+  //(f->ecb) ? (print_cipher(f)) : (0);
+  //printf("i: %d, after data: %llx\n", i, f->x);
+  //printf("a_op: %hhu\n", f->a_op);
+  (f->a_op) ? (print_cipherB64(f)) : (print_cipher(f));
   i++;
     }
-  (!f->ecb) ? (print_cipher(f)) : (0);
   f->file = buf;
   pkcs7_pad(f);
   //printf("i: %d, ", i);
@@ -215,8 +325,12 @@ void	ft_des(t_flags *f)
   handle_shit(buf, f);
   
 initial_perm(f);
- 
   ft_16_rounds(f);
   final_perm(f);
-  print_cipher(f);
+  
+  //printf("i: %d, after data: %llx\n", i, f->x);
+  f->flush = 1;
+  (f->a_op) ? (print_cipherB64(f)) : (print_cipher(f));
+  //printf("f->x: %llx\n", f->x);
+  //print_cipher(f);
 }

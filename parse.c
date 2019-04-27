@@ -22,19 +22,20 @@ void			fn(void (*fun[8]) (t_flags *f))
 	fun[5] = base64;
 	fun[6] = ft_des;
 	fun[7] = ft_des;
-	fun[8] = NULL;
+	fun[8] = ft_des_ecb;
+	fun[9] = NULL;
 }
 
 int				optns(t_flags *f, char **argv)
 {
 	const char	*op[] = {"md5", "sha256", "sha224",
-				 "sha512", "sha384", "base64", "des", "des-cbc",  NULL};
-	void		(*fun[9]) (t_flags *f);
+				 "sha512", "sha384", "base64", "des", "des-cbc", "des-ecb",  NULL};
+	void		(*fun[10]) (t_flags *f);
 	int			j;
 
 	fn(fun);
 	j = 0;
-	while (j <= 7)
+	while (j <= 8)
 	{
 		if (ft_strcmp(op[j], argv[f->i]) == 0)
 		{

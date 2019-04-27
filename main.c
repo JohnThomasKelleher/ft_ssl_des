@@ -29,6 +29,7 @@ t_flags				*help_main(t_flags *f)
 	f->i = 1;
 	f->decode = 0;
 	f->ecb = 0;
+	f->flush = 0;
 	return (f);
 }
 
