@@ -10,7 +10,7 @@ uint64_t	get_salt(void)
   char buf[8];
   ret = (uint64_t*)buf;
 
-  fd = open(/dev/random, O_RDONLY);
+  fd = open("/dev/random", O_RDONLY);
   read(fd, buf, 8);
   return (ret[0]);
 }
@@ -42,7 +42,7 @@ void conc(char *concat, uint64_t a, uint64_t b)
   int i = 0;
   while (i < 8)
     {
-      concat[i] = (i < 4) ? (a[i]) : (b[(i - 4)]);
+      concat[i] = (i < 4) ? (x[i]) : (y[(i - 4)]);
       i++;
     }
 }
@@ -71,7 +71,10 @@ void HMAC_md5_pad(char *c, int len)
 
 void HMAC_md5(char *c, t_flags *f)
 {
+  f->mm = (uint32_t*)c;
   
+  md5_hash(f);
+  help_me2(f);
 }
 
 void	HMAC(t_flags *f)
@@ -89,7 +92,7 @@ void	HMAC(t_flags *f)
   key = (uint64_t*)f->password;
   if (len > 64)
     {
-      f->password = ft_md5(f);
+      f->password = handle_big_HMAC(f);
     }
   else if (len < 64)
     pad_HMAC(f);//pad with 0s till 64 bytes
@@ -103,15 +106,15 @@ void	HMAC(t_flags *f)
   int mssg_len = (f->first) ? (17) : (16);
   HMAC_md5_pad(concat, mssg_len);
   HMAC_md5(concat, f);
-  AB += f->a;
+  AB += f->a_fin;
   AB <<= 32;
-  AB += f->b;
+  AB += f->b_fin;
   conc(concat, o_key, AB);// 16 bytes
   HMAC_md5_pad(concat, 16);
   HMAC_md5(concat, f);
-  AB +=f->a;
+  AB +=f->a_fin;
   AB <<= 32;
-  AB +=f->b;
+  AB +=f->b_fin;
   return (AB);
 }
 
