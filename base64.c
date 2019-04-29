@@ -113,7 +113,7 @@ void	putstr_nonline(char *hold)
 
 //char	decode_char64(unsigned int)
 
-void	print_decode64(unsigned int x, int old_i)
+void	print_decode64(unsigned int x, int old_i, t_flags *f)
 {
   char *y;
   x >>= 8;
@@ -122,11 +122,12 @@ void	print_decode64(unsigned int x, int old_i)
   //printf("hold: %u old_i: %d\n", x, old_i);
 
   int i = old_i -2;
+  //(f->decrypt) ? (
   //int stop = old_i - 1;
   while (i >= 0)
     {
       //printf("val: %hhu i: %d\n", y[i], i);
-      write(1, &y[i], 1);
+      write(f->dec_fd, &y[i], 1);
       //printf("i: %d", i);
       i--;
     }
@@ -146,6 +147,15 @@ unsigned char	find_index(char buf)
   return (0);
 }
 
+void unpack_base64(t_flags *f)
+{
+  remove("./del2");
+  f->dec_fd = (uint32_t)open("./del2", O_RDWR | O_CREAT, 00777);
+  f->decode = 1;
+  base64(f);
+  f->fd = f->dec_fd;
+}
+
 void decode_base64(t_flags *f)
 {
   unsigned int hold;
@@ -153,7 +163,7 @@ void decode_base64(t_flags *f)
   uint8_t x;
   int i = 0;
 
-  while (1 != (f->ret = read(f->fd, buf, 4)))
+  while (1 < (f->ret = read(f->fd, buf, 4)))
     {
       buf[f->ret] = '\0';
       hold = 0;
@@ -174,7 +184,7 @@ void decode_base64(t_flags *f)
       //printf("BEFORE buf[0]: %hhu hold: %u ret: %d \n",buf[0],  hold, f->ret);
       hold = reverse_bits(hold);
       //printf("AFTER buf[0]: %hhu hold: %u ret: %d \n",buf[0],  hold, f->ret);
-      print_decode64(hold, f->ret);
+      print_decode64(hold, f->ret, f);
     }
 }
 

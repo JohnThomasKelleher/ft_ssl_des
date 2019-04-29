@@ -30,16 +30,23 @@ t_flags				*help_main(t_flags *f)
 	f->decode = 0;
 	f->ecb = 0;
 	f->flush = 0;
+	f->orig_salt = 0;
+	f->p = 0;
 	return (f);
 }
 
 int					main(int argc, char **argv)
 {
 	t_flags			*f;
-	int				i;
+	char *x;
+	char y[2];
+	
+	x = 0;
+	x = NULL;
+	x = (char*)malloc(sizeof(char) * 2);
 
+	y[0]+=0;
 	argv[argc] = NULL;
-	i = 0;
 	f = malloc(sizeof(t_flags) * 2);
 	ass_op(f);
 	f->argc = argc;

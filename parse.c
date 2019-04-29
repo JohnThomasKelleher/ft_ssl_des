@@ -51,6 +51,9 @@ int				optns(t_flags *f, char **argv)
 
 void			parse(t_flags *f, char **a)
 {
+  if (DES(a[1]))
+      return (handle_des(f, a));
+      
 	while (f->i < f->argc)
 	{
 		f->hold = f->i;

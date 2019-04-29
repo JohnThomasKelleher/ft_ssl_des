@@ -31,6 +31,8 @@ int				sha_init_abc(t_flags *f)
 	f->seven = f->h6;
 	f->eight = f->h7;
 	f->a_op = 0;
+	f->decrypt = 0;
+	f->dec_fd = 1;
 	return (0);
 }
 
@@ -74,7 +76,13 @@ void	handle_flags(t_flags *f, char **a)
 {
   if (a[f->i][1] == 'a')
     f->a_op = 1;
-  
+  if (a[f->i][1] == 'p')
+    {
+    f->p = 1;
+    f->password = a[(f->i+1)];
+    }  
+  if(a[f->i][1] == 'd')
+    f->decrypt = 1;
 }
 
 void set_hex(t_flags *f, char **a)
@@ -98,20 +106,31 @@ void set_hex(t_flags *f, char **a)
     }
   f->x = (a[f->i][1] == 'v') ? (ret) : (f->x); 
   f->in_key = (a[f->i][1] == 'k') ? (ret) : (f->in_key);
+  f->orig_salt = (a[f->i][1] == 's') ? (ret) : (f->orig_salt);
 }
+/*
+void                    ass_op(t_flags *f)
+{
+  f->op = malloc(8 * 127);
+  f->op['d'] = ft_stdin;
+  f->op['p'] = ft_stdin;
+  f->op['q'] = ft_flags;
+  f->op['r'] = ft_flags;
+  f->op['s'] = ft_strin;
 
+  }*/
 
 
 void			ass_op(t_flags *f)
 {
   f->op = malloc(8 * 127);
-	f->op['p'] = handle_pass;
+	f->op['p'] = handle_flags;
 	f->op['q'] = ft_flags;
 	f->op['r'] = ft_flags;
-	f->op['s'] = ft_strin;
-	f->op['e'] = ft_stdin;
-	f->op['d'] = ft_stdin;
-	f->op['i'] = handle_des;
+	f->op['s'] = set_hex;
+	f->op['e'] = handle_flags;
+	f->op['d'] = handle_flags;
+	f->op['i'] = handle_file;
 	f->op['a'] = handle_flags;
 	f->op['k'] = set_hex;
 	f->op['v'] = set_hex;

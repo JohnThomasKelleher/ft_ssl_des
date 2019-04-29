@@ -14,6 +14,9 @@
 # define HACHE_H
 # define TWO_FIFTY(c) (c != 3 && c != 4)
 # define OLD(f) (f->alg != base64)
+# define HEX(f) ((f >= '0' and f <= '9') || (f >= 'A' && f <= 'Z') || (f >= 'a' && f <= 'z'))
+# define NOT_DES(f) (f != ft_des && f != ft_des_ecb)
+# define DES(a) (a[0] == 'd' && a[1] == 'e' && a[2] == 's')
 # include <sys/types.h>
 # include <sys/uio.h>
 # include <sys/stat.h>
@@ -23,26 +26,40 @@
 # include <math.h>
 # include <fcntl.h>
 # include "libft/libft.h"
+# include <iso646.h>
 
 typedef struct s_ap				t_flags;
-
 struct							s_ap
 {
+  int					dec_fd;
+  uint8_t					decrypt;  
+  uint8_t						first;
+  uint64_t						salt;
+  char							*password;
+  uint64_t						orig_salt;
+  uint8_t flush;
+  uint8_t	a_op;
+  int argc;
+  uint8_t		invalid_key;
   	char						recent_letter;
   	uint8_t						decode;
+  uint8_t				ecb;
+  uint64_t				x_hold;
   uint64_t				x;
   uint32_t		l;
-  uint32_t		ar;
+  uint32_t		f_hold;
+uint32_t		ar;
   uint64_t	ex_r;
   uint64_t		*keys;
   uint64_t		in_key;
+  void (**op) (t_flags *f, char **a);
 	uint64_t					s0;
 	uint64_t					s1;
 	int							fd2;
 	char						*name;
 	void						(*alg) (t_flags *f);
 	int							fd;
-	int							ret;
+	uint32_t							ret;
 	char						*file;
 	char						*algy;
 	int						hold;
@@ -103,24 +120,40 @@ struct							s_ap
 	uint32_t					temp2;
 	uint32_t					*w;
 	uint32_t					b_ind;
+  
 };
 
-
-void    des(t_flags *f);
-uint8_t s1(uint8_t in);
-uint8_t s2(uint8_t in);
-uint8_t s3(uint8_t in);
-uint8_t s4(uint8_t in);
-uint8_t s5(uint8_t in);
-uint8_t s6(uint8_t in);
-uint8_t s7(uint8_t in);
-uint8_t s8(uint8_t in);
-
-void    base64(t_flags *f);
+void unpack_base64(t_flags *f);
+void                    other_ass_op(t_flags *f);
+void    handle_file(t_flags *f, char **a);
+void HMAC_md5(char *c, t_flags *f);
+void                            help_me2(t_flags *f);
+void    handle_pass(t_flags *f, char **a);
+int                             			optns(t_flags *f, char **argv);
+void							ft_des_ecb(t_flags *f);
+void    						flip_buf(char *buf);
+void 							reverse_four_bytes(char *x);
+void							putstr_nonline(char *hold);
+char							*getchar_64(char *buf);
+void							print_keys(t_flags *f);
+void							ass_dig(int *dig);
+void							handle_des(t_flags *f, char **a);
+void							initial_perm(t_flags *f);
+void							final_perm(t_flags *f);
+void							ft_des(t_flags *f);
+uint8_t							s1(uint8_t in);
+uint8_t							s2(uint8_t in);
+uint8_t							s3(uint8_t in);
+uint8_t							s4(uint8_t in);
+uint8_t							s5(uint8_t in);
+uint8_t							s6(uint8_t in);
+uint8_t							s7(uint8_t in);
+uint8_t							s8(uint8_t in);
+void							generate_keys_des(t_flags *f);
+void							base64(t_flags *f);
 uint32_t						left_rotate(uint32_t n, uint32_t d);
-void							ass_op(void (**op) (t_flags *f, char **argv));
-void							parse(t_flags *f, char **argv,
-								void (**op) (t_flags *f, char **argv));
+void							ass_op(t_flags *f);
+void							parse(t_flags *f, char **argv);
 void							ft_md5(t_flags *f);
 char							*append(t_flags *f);
 uint32_t						*ft_make_s(void);

@@ -18,6 +18,7 @@ void				help_me(t_flags *f)
 	f->b = f->b_fin;
 	f->c = f->c_fin;
 	f->d = f->d_fin;
+	//(f->first) && printf("a: %x, b: %x, c: %x d: %x\n", f->a, f->b, f->c, f->d);
 }
 
 void				md5_hash(t_flags *f)
@@ -39,6 +40,7 @@ void				md5_hash(t_flags *f)
 		ff = (i >= 48 && i <= 63) ? (f->c ^ (f->b | (~f->d))) : (ff);
 		g = (i >= 48 && i <= 63) ? ((7 * i) % 16) : (g);
 		ff = ff + f->a + f->kk[i] + f->mm[g];
+		//(f->first) && printf("a: %x, b: %x, c: %x d: %x ff: %x kk[i]: %x\n", f->a, f->b, f->c,f->d, ff, f->kk[i]);
 		f->a = f->d;
 		f->d = f->c;
 		f->c = f->b;
@@ -62,6 +64,7 @@ void				help_me3(t_flags *f)
 	f->kk = ft_make_k();
 	f->b_ind = 0;
 	f->fd = (f->st) ? (uint32_t)open("./del", O_RDONLY) : (f->fd);
+	f->i = 0;
 }
 
 void				ft_md5(t_flags *f)
@@ -81,6 +84,7 @@ void				ft_md5(t_flags *f)
 	}
 	buf[f->ret] = '\0';
 	(f->ret > 0) ? (ft_pad(buf, f)) : (0);
+	f->i = 0;
 	while (f->i < f->ret)
 	{
 		f->mm = (uint32_t*)&buf[f->i];
@@ -89,5 +93,5 @@ void				ft_md5(t_flags *f)
 		f->i += 64;
 	}
 	catch = append(f);
-	ft_putmd5(catch, f);
+	(NOT_DES(f->alg)) ? (ft_putmd5(catch, f)) : (0);
 }

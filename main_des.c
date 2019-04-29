@@ -122,7 +122,10 @@ void	ft_16_rounds(t_flags *f)
     
       expansion_des(f); //does expansion from f->r to f->ex_r
       //f->ar = 0;
-      f->ex_r ^= f->keys[i];
+      if (f->decrypt)
+	f->ex_r ^= f->keys[(15-i)];
+      else
+	f->ex_r ^= f->keys[i];
       //printf("i: %d, before sbox: %llx, ", i, f->ex_r);
       s_boxes(f); //does sboxes to go from f->ex_r to f->f_hold
       //printf("after sbox: %x\n", f->f_hold);
@@ -165,14 +168,23 @@ void pkcs7_pad(t_flags *f)
     }
 } 
  
-void	handle_des(t_flags *f, char **a)
+void	handle_file(t_flags *f, char **a)
 {
-  f->i++;
-  if (!(f->fd = open(a[f->i], O_RDONLY)))
+  if (!(f->fd = open(a[(f->i + 1)], O_RDONLY)))
     {
       printf("sorry, no file there\n");
       return ;
     }
+}
+
+void	handle_des(t_flags *f, char **a)
+{
+  int hold_fd;
+  
+  hold_fd = 0;
+  optns(f, a);
+  f->i++;
+  //other_ass_op(f);
   //f->op['p'] = pbkdf;
   while (a[f->i])
     {
@@ -181,7 +193,15 @@ void	handle_des(t_flags *f, char **a)
       optns(f, a);
       f->i++;
     }
-  f->alg(f);
+  if (f->p)
+    {
+      hold_fd = f->fd;
+    handle_pass(f, a);
+    f->fd = hold_fd;
+    }
+  //(f->decrypt && !f->ecb) ? (ft_decrypt(f));
+  (f->decrypt && f->a_op) ? (unpack_base64(f)) : (0); //set f->dec_fd to a new file
+  (f->alg) ?  (f->alg(f)) : (0);
 }
 
 void	flip_buf(char *buf)
