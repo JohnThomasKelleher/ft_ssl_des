@@ -141,30 +141,40 @@ int	print_cipher(t_flags *f)
 {
   //printf("f->ar: %x\n", f->ar);
   //printf("f->x: %llx\n", f->x);
-  int i = 0;
+  uint32_t i = 0;
+  uint64_t x_val;
   char *x;
-  x = (char*) &f->x;
+  int end;
+
+  end = 8;
+  
+  x_val = f->x;
+  x = (char*) &x_val;
+  f->decrypt && f->flush  && (end = (8 - x[7]));
   flip_buf(x);
-  while (i < 8)
+  printf("ret: %d\n", f->ret);
+  while ((i < end))// && (i < f->ret))// || !f->decrypt))
     {
-      write(1, &x[i], 1);
-      write(1, " ", 1);//delete
+      //if (f->decrypt)
+	write(1, &x[i], 1);
+      //write(1, " ", 1);//delete
       //printf("%02hhx", x[i]); 
       i++;
     }
-  if (f->flush)
-    write(1, "\n", 1);
+  //if (f->flush)
+    //write(1, "\n", 1);
   return (0);
 }
 
 void pkcs7_pad(t_flags *f)
 {
   uint8_t num = (8 - f->ret);
-  
-  while (f->ret < 8)
+  int i = f->ret;
+
+  while (i < 8)
     {
-      f->file[f->ret] = num;
-      f->ret++;
+      f->file[i] = num;
+      i++;
     }
 } 
  
@@ -200,7 +210,8 @@ void	handle_des(t_flags *f, char **a)
     f->fd = hold_fd;
     }
   //(f->decrypt && !f->ecb) ? (ft_decrypt(f));
-  (f->decrypt && f->a_op) ? (unpack_base64(f)) : (0); //set f->dec_fd to a new file
+  f->fd = (f->fd > 0) ? (f->fd) : (0);
+  (f->decrypt && f->a_op) ? (unpack_base64(f)) : (0); //set f->dec_fd to a new file, puts decoded into f->fd
   (f->alg) ?  (f->alg(f)) : (0);
 }
 
@@ -282,6 +293,7 @@ void	print_cipherB64(t_flags *f)
   static int place_in_b;
   uint32_t *x; 
   x = (uint32_t*)b;
+  //printf("here\n");
 //if 0, then two loops, 2 stored
   //if 1, then three loops, 0 stored
   //if 2, then three loops, 1 stored
@@ -322,23 +334,32 @@ void	ft_des(t_flags *f)
   int i = 0;
 
   f->keys = (uint64_t*)malloc(sizeof(int) * 17);
+  //printf("key: %llx\n", f->in_key);
   generate_keys_des(f);
+  //printf("fd: %d\n", f->fd);
   while (8 == (f->ret = read(f->fd, buf, 8)))
     {
       //printf("i: %d", i);
       handle_shit(buf, f);
       buf[f->ret] = '\0';
+      //printf("buf: %s\n", buf);
       f->file = buf;
+   
   initial_perm(f);
   ft_16_rounds(f);
   final_perm(f);
   //(f->ecb) ? (print_cipher(f)) : (0);
-  //printf("i: %d, after data: %llx\n", i, f->x);
+  
+  //printf("\ni: %d, after data: %llx\n", i, f->x);
   //printf("a_op: %hhu\n", f->a_op);
-  (f->a_op) ? (print_cipherB64(f)) : (print_cipher(f));
+  (f->a_op && !f->decrypt) ? (print_cipherB64(f)) : (print_cipher(f));
   i++;
     }
+  if (!f->decrypt)
+    {
+//printf("buf: %s\n", buf);
   f->file = buf;
+  //printf("ret: %d\n", f->ret);
   pkcs7_pad(f);
   //printf("i: %d, ", i);
   
@@ -348,9 +369,11 @@ initial_perm(f);
   ft_16_rounds(f);
   final_perm(f);
   
-  //printf("i: %d, after data: %llx\n", i, f->x);
+  //printf("\ni: %d, after data: %llx\n", i, f->x);
   f->flush = 1;
-  (f->a_op) ? (print_cipherB64(f)) : (print_cipher(f));
+  //if (!f->decrypt)
+    (f->a_op) ? (print_cipherB64(f)) : (print_cipher(f));
+    }
   //printf("f->x: %llx\n", f->x);
   //print_cipher(f);
 }

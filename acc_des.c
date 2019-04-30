@@ -16,6 +16,7 @@ void    initial_perm(t_flags *f)
   f->ww = (uint64_t*)f->file;
   
   f->x = f->ww[0];
+  //printf("\ni: %d, before data: %llx\n", i, f->x);
   //printf("before ip: %llu, ", f->x);
   while (i < 64)
     {

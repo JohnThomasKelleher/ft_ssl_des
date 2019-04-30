@@ -93,7 +93,7 @@ void set_hex(t_flags *f, char **a)
   uint64_t ret= 0;
   
   ass_dig(dig);
-  while (a[j][i] != '\0')
+  while (a[j][i] != '\0' && i < 16)
     {
       ret *= 16;
       if (!HEX(a[j][i]))
@@ -102,6 +102,12 @@ void set_hex(t_flags *f, char **a)
           return ;
         }
       ret += dig[(int)a[j][i]];
+      i++;
+    }
+  while (i < 16)
+    {
+      ret *= 16;
+      ret += 0;
       i++;
     }
   f->x = (a[f->i][1] == 'v') ? (ret) : (f->x); 

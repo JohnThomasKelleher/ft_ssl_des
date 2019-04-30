@@ -53,7 +53,8 @@ void			parse(t_flags *f, char **a)
 {
   if (DES(a[1]))
       return (handle_des(f, a));
-      
+  if (B64(a[1]))
+    return (handle_B64(f, a));
 	while (f->i < f->argc)
 	{
 		f->hold = f->i;

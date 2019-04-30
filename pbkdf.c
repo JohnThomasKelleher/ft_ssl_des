@@ -20,6 +20,7 @@ void  ft_the_writer(t_flags *f, char *x, int len)
   i = 0;
   while (i < len)
     {
+      //write(1, &x[i], 1);
       write(f->fd, &x[i], 1);
       i++;
     }
@@ -58,7 +59,7 @@ int concat(char **x, t_flags *f)
       i++;
     }
   int j = 0;
-  //flip_buf(hold);
+  flip_buf(hold);
   while (j < 8)
     {
       x[0][i] = hold[j];
@@ -85,6 +86,7 @@ void handle_pass(t_flags *f, char **a)
   printf("salt=%llX\n", f->salt);
   //concat password || salt. null term, dont need length. REWRITE TO USE LENGHT NOT NULL TERM
   len = concat(x, f);
+  //printf("len: %d\n", len);
   //send to pwdin as x[0]
   f->orig_len = 0;
   ft_pwdin(f, x, len);
