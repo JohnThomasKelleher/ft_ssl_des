@@ -47,7 +47,7 @@ int					main(int argc, char **argv)
 
 	y[0]+=0;
 	argv[argc] = NULL;
-	f = malloc(sizeof(t_flags) * 2);
+	f = (t_flags*)malloc(sizeof(t_flags) * 2);
 	ass_op(f);
 	f->argc = argc;
 	if (argc == 1)

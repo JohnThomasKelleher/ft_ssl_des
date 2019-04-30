@@ -128,6 +128,8 @@ void	print_decode64(unsigned int x, int old_i, t_flags *f)
   while (i >= 0)
     {
       //printf("val: %hhu i: %d\n", y[i], i);
+      //write(1, &y[i], 1);
+      //printf("i: %d\n", i);
       write(f->dec_fd, &y[i], 1);
       //printf("i: %d", i);
       i--;
@@ -184,7 +186,7 @@ void rem_whitespace(t_flags *f)
   fd_hold = open("./del3", O_RDWR | O_CREAT, 00777);
   while(0 < read(f->fd, buf, 1))
     {
-      if (buf[0] != ' ' && buf[0] != 9)
+      if (buf[0] != ' ' && buf[0] != 9 && buf[0] != '\n')
 	write(fd_hold, &buf[0], 1);
     }
   if (f->fd != 0)
@@ -205,8 +207,9 @@ void decode_base64(t_flags *f)
   f->fd = open("./del3", O_RDWR);
   while (1 < (f->ret = read(f->fd, buf, 4)))
     {
-      //printf("buf: %s\n", buf);
+      //printf("buf: %s, ", buf);
       buf[f->ret] = '\0';
+      //printf("f->ret: %d\n", f->ret);
       hold = 0;
       i = f->ret - 1;
       while (i >= 0)
@@ -225,11 +228,13 @@ void decode_base64(t_flags *f)
 	  //printf("\n");
 	  i--;
 	}
+ 
       //printf("BEFORE buf[0]: %hhu hold: %u ret: %d \n",buf[0],  hold, f->ret);
       hold = reverse_bits(hold);
       //printf("hold: %x\n", hold);
       //printf("AFTER buf[0]: %hhu hold: %u ret: %d \n",buf[0],  hold, f->ret);
-      print_decode64(hold, f->ret, f);
+      //printf("f->ret: %d\n", f->ret);
+     print_decode64(hold, f->ret, f);
     }
 }
 
