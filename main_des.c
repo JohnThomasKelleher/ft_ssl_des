@@ -265,34 +265,50 @@ void	putnstr(char *a, int len)
 void	base64_out(char *b, t_flags *f, int j)
 {
   uint32_t *c;
-  uint32_t hold;
+  //uint32_t hold;
+  int end = 3;
   char out;
   int i = 0;
   char s[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
+  //int first = 1;
   
   //printf("c[0]: %x\n", c[0]);
   reverse_four_bytes(b);
   c = (uint32_t*)b;
-  hold = (c[0]);
+  //hold = (c[0]);
+  //hold &= 0xffffff00;
   //printf("c[0] %x\n", c[0]);
-  while (i <= 3)
+  //j = (5) - j;
+  if (f->flush)
     {
+      end -= j;
+    }
+  while (i <= end)
+    {
+      //j--;
       out = ((c[0] >> (26 - 6 * i)) & 0x3f);
       //printf("hold: %x\n", hold);
       //hold <<= 6;
       //printf(":::%u:::", f->ret);
-      if (f->orig_len == 64)
+      if (f->orig_len && f->orig_len % 64 == 0)
 	write(1, "\n", 1);
-      if (hold || j--)
-	{
+      //hold <<= 6;
+      //printf("j: %d, i: %d\n", j, i);
+      //j = (3 - i) - j;
+      //if (out)
+      //{
+	  //printf("hold: %u, j: %d\n", hold, j);
 	f->orig_len += write(1, &s[(int)out], 1);
-	}
-      else
-	write(1, "=", 1);
-      hold <<= 6;
+	//}
+	//else if (j >=  0)
+	//f->orig_len += write(1, "A", 1);
+	//else
+	//f->orig_len += write(1, "=", 1);
+	//hold <<= 6;
       i++;
     }
+  while (i++ <= 3)
+    f->orig_len += write(1, "=", 1);
 }
 
 void	print_cipherB64(t_flags *f)
@@ -318,31 +334,21 @@ void	print_cipherB64(t_flags *f)
 	  place_in_b = 0;
 	  b[3] = '\0';
 	  //printf("bvar: %x\n", x[0]);
-	  base64_out(b, f, 3);
+	  base64_out(b, f, 0);
 	}
     }
   if (f->flush && place_in_b)
     {
-      reverse_four_bytes(b);
-      //x[0] = reverse_bits(x[0]);
-      //reverse_four_bytes(b);
-      x[0] >>= 8;
-      i = 0;
-      while (place_in_b++ <= 3)
+      i = -1;
+      while (place_in_b <= 3)
 	{
+	  b[place_in_b++] = 0;
 	  //printf("x[0]: %u\n", x[0]);
 	  i++;
-	  x[0] >>= 6;
+	  ///x[0] >>= 6;***
 	}
-      //printf("x[0]: %u\n", x[0]);
-      x[0] <<= (6 * i);
-      x[0] <<= 8;
-      //x[0] = reverse_bits(x[0]);
-      reverse_four_bytes(b);
-      //printf("x[0]: %u\n", x[0]);
-      //x[0] &= big;
-      //printf("x[0]: %u\n", x[0]);
-      base64_out(b, f, (3-i));
+
+      base64_out(b, f, (i));
     }
   if (f->flush)
     write(1, "\n", 1);
@@ -451,7 +457,9 @@ void    ft_des_decrypt(t_flags *f)
 
       //printf("\ni: %d, after data: %llx\n", i, f->x);
       //printf("a_op: %hhu\n", f->a_op);
-      (print_cipher(f));
+      
+
+      (print_cipher(f));//********
       buf2tobuf(buf, buf2);
       f->ret = f->ret2;
       i++;
@@ -480,6 +488,6 @@ void    ft_des_decrypt(t_flags *f)
   initial_perm(f);
   ft_16_rounds(f);
   final_perm(f);
-  (print_cipher(f));
+  (print_cipher(f));//**********
     }
 }
