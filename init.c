@@ -112,8 +112,8 @@ void set_hex(t_flags *f, char **a)
     }
   f->x = (a[f->i][1] == 'v') ? (ret) : (f->x); 
   f->in_key = (a[f->i][1] == 'k') ? (ret) : (f->in_key);
-  if (a[f->i][1] == 'k')
-    printf("key: %llx\n", ret);
+  //if (a[f->i][1] == 'k')
+  //printf("key: %llx\n", ret);
   f->orig_salt = (a[f->i][1] == 's') ? (ret) : (f->orig_salt);
 }
 /*
