@@ -1,0 +1,8 @@
+
+-output to file(header with salt?)
+-output to non-base64
+-INIT -OP TO NULL
+-do decryption
+-parsing and troubleshooting
+-norming and leaks
+-corrections

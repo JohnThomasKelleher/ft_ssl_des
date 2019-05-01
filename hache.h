@@ -17,6 +17,7 @@
 # define HEX(f) ((f >= '0' and f <= '9') || (f >= 'A' && f <= 'Z') || (f >= 'a' && f <= 'z'))
 # define NOT_DES(f) (f != ft_des && f != ft_des_ecb)
 # define DES(a) (a[0] == 'd' && a[1] == 'e' && a[2] == 's')
+# define B64(a) (a[0] == 'b' && a[1] == 'a' && a[2] == 's' && a[3] == 'e' && a[4] == '6' && a[5] == '4')
 # include <sys/types.h>
 # include <sys/uio.h>
 # include <sys/stat.h>
@@ -31,6 +32,10 @@
 typedef struct s_ap				t_flags;
 struct							s_ap
 {
+  //uin8_t				first;
+  uint64_t				prev;
+  uint64_t				pt_carry;
+  int					ret2;
   int					dec_fd;
   uint8_t					decrypt;  
   uint8_t						first;
@@ -123,6 +128,10 @@ uint32_t		ar;
   
 };
 
+unsigned int reverse_bits(unsigned int x);
+void    ft_des_decrypt(t_flags *f);
+void decode_base64(t_flags *f);
+void    handle_B64(t_flags *f, char **a);
 void unpack_base64(t_flags *f);
 void                    other_ass_op(t_flags *f);
 void    handle_file(t_flags *f, char **a);
