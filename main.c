@@ -14,7 +14,6 @@
 
 t_flags				*help_main(t_flags *f)
 {
-  //f = malloc(sizeof(t_flags));
 	f->never = 1;
 	f->is_ne = 0;
 	f->p = 0;
@@ -47,7 +46,7 @@ int					main(int argc, char **argv)
 
 	y[0]+=0;
 	argv[argc] = NULL;
-	f = (t_flags*)malloc(sizeof(t_flags) * 2);
+	f = (t_flags*)malloc(sizeof(t_flags) * 10);
 	ass_op(f);
 	f->argc = argc;
 	if (argc == 1)

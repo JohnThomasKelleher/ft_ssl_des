@@ -83,12 +83,12 @@ void handle_pass(t_flags *f, char **a)
   f->b_ind = 0;
   f->orig_salt = (f->orig_salt) ? (f->orig_salt) : (get_salt());
   f->salt = f->orig_salt;
-  printf("salt=%llX\n", f->salt);
+  //printf("salt=%llX\n", f->salt);
   //concat password || salt. null term, dont need length. REWRITE TO USE LENGHT NOT NULL TERM
   len = concat(x, f);
   //printf("len: %d\n", len);
   //send to pwdin as x[0]
-  f->orig_len = 0;
+  f->orig_len = 0;//********************************************
   ft_pwdin(f, x, len);
   //f->a_fin conc with f->b_fin
   f->in_key = 0;
@@ -96,7 +96,7 @@ void handle_pass(t_flags *f, char **a)
   f->in_key <<= 32;
   f->in_key += f->a_fin;
   flip_buf((char*)&f->in_key);
-  printf("key=%llX\n", f->in_key);
+  //printf("key=%llX\n", f->in_key);
 	 free(x[0]);
 	 free(x);
 }

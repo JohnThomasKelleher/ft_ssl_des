@@ -72,70 +72,36 @@ void			initi(t_flags *f)
 	f->invalid_key = 0;
 }
 
-void	handle_flags(t_flags *f, char **a)
+void		openoutputfile(t_flags *f, char **a)
 {
-  if (a[f->i][1] == 'a')
-    f->a_op = 1;
-  if (a[f->i][1] == 'p')
-    {
-    f->p = 1;
-    f->password = a[(f->i+1)];
-    }  
-  if(a[f->i][1] == 'd')
-    f->decrypt = 1;
-}
 
-void set_hex(t_flags *f, char **a)
-{
-  int dig[124];
-  int j = (f->i + 1);
-  int i = 0;
-  uint64_t ret= 0;
+    f->fd_out = (uint32_t)open(a[(f->i + 1)], O_RDWR | O_CREAT, 00777);
   
-  ass_dig(dig);
-  while (a[j][i] != '\0' && i < 16)
-    {
-      ret *= 16;
-      if (!HEX(a[j][i]))
-        {
-          f->invalid_key = 1;
-          return ;
-        }
-      ret += dig[(int)a[j][i]];
-      i++;
-    }
-  while (i < 16)
-    {
-      ret *= 16;
-      ret += 0;
-      i++;
-    }
-  f->x = (a[f->i][1] == 'v') ? (ret) : (f->x); 
-  f->in_key = (a[f->i][1] == 'k') ? (ret) : (f->in_key);
-  //if (a[f->i][1] == 'k')
-  //printf("key: %llx\n", ret);
-  f->orig_salt = (a[f->i][1] == 's') ? (ret) : (f->orig_salt);
 }
-/*
-void                    ass_op(t_flags *f)
+
+void		invalid_option(t_flags *f, char **a)
 {
-  f->op = malloc(8 * 127);
-  f->op['d'] = ft_stdin;
-  f->op['p'] = ft_stdin;
-  f->op['q'] = ft_flags;
-  f->op['r'] = ft_flags;
-  f->op['s'] = ft_strin;
-
-  }*/
-
+  f+=0;
+  a+=0;
+  ft_printf("Invalid Option Flag\n");
+}
 
 void			ass_op(t_flags *f)
 {
+
+
   f->op = malloc(8 * 127);
-	f->op['p'] = handle_flags;
-	f->op['q'] = ft_flags;
-	f->op['r'] = ft_flags;
-	f->op['s'] = set_hex;
+  int i;
+  
+  i = 0;
+  while (i < 127)
+    f->op[i++] = invalid_option;
+  f->fd_out = 0;
+  f->op['o'] = openoutputfile;
+  f->op['p'] = handle_flags;
+  f->op['q'] = ft_flags;
+  f->op['r'] = ft_flags;
+  f->op['s'] = set_hex;
 	f->op['e'] = handle_flags;
 	f->op['d'] = handle_flags;
 	f->op['i'] = handle_file;

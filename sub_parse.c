@@ -26,7 +26,6 @@ void		ft_quiet(t_flags *f, char **argv)
 
 void		ft_stdin(t_flags *f, char **argv)
 {
-  printf("entering stdin\n");
   f->decode = (f->recent_letter == 'd') ? (1) : (0);
 	argv += 0;
 	f->fd = 0;
