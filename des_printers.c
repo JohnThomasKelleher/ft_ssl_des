@@ -6,7 +6,7 @@
 /*   By: jkellehe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/02 23:33:59 by jkellehe          #+#    #+#             */
-/*   Updated: 2019/05/02 23:36:47 by jkellehe         ###   ########.fr       */
+/*   Updated: 2019/05/03 00:40:47 by jkellehe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,15 @@ void				base64_out(char *b, t_flags *f, int j)
 void				print_cipherb64(t_flags *f, int i)
 {
 	static char		b[4];
-	int				place_in_x = 0;
+	int				place_in_x;
 	static int		place_in_b;
 	uint32_t		*x;
 
-	x = (uint32_t*)	b;
+	place_in_x = 0;
+	x = (uint32_t*)b;
 	while (place_in_x <= 7)
 	{
-		b[place_in_b] = (f->x >> (56 - 8 * place_in_x)) & 0xff;
-		place_in_x++;
-		place_in_b++;
+		b[place_in_b++] = (f->x >> (56 - 8 * place_in_x++)) & 0xff;
 		if (place_in_b == 3)
 		{
 			place_in_b = 0;
@@ -61,14 +60,10 @@ void				print_cipherb64(t_flags *f, int i)
 			base64_out(b, f, 0);
 		}
 	}
-	if (f->flush && place_in_b)
+	if (f->flush && place_in_b && (i = -1))
 	{
-		i = -1;
-		while (place_in_b <= 3)
-		{
+		while (place_in_b <= 3 && ((i += 1) || (!i)))
 			b[place_in_b++] = 0;
-			i++;
-		}
 		base64_out(b, f, (i));
 	}
 	if (f->flush)
@@ -78,20 +73,20 @@ void				print_cipherb64(t_flags *f, int i)
 int					print_cipher(t_flags *f)
 {
 	int				i;
-	uint64_t 		x_val;
+	uint64_t		x_val;
 	char			*x;
 	int				end;
 
 	i = 0;
 	end = 8;
 	x_val = f->x;
-	x = (char*) &x_val;
+	x = (char*)&x_val;
 	if (f->decrypt && f->flush)
 	{
 		(end = (8 - x[0]));
 	}
 	flip_buf(x);
-	while (i < end)	
+	while (i < end)
 	{
 		write(f->fd_out, &x[i], 1);
 		i++;

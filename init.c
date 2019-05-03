@@ -6,7 +6,7 @@
 /*   By: jkellehe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 17:14:19 by jkellehe          #+#    #+#             */
-/*   Updated: 2019/01/15 21:45:31 by jkellehe         ###   ########.fr       */
+/*   Updated: 2019/05/03 01:38:20 by jkellehe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,36 +72,20 @@ void			initi(t_flags *f)
 	f->invalid_key = 0;
 }
 
-void		openoutputfile(t_flags *f, char **a)
-{
-
-    f->fd_out = (uint32_t)open(a[(f->i + 1)], O_RDWR | O_CREAT, 00777);
-  
-}
-
-void		invalid_option(t_flags *f, char **a)
-{
-  f+=0;
-  a+=0;
-  ft_printf("Invalid Option Flag\n");
-}
-
 void			ass_op(t_flags *f)
 {
+	int			i;
 
-
-  f->op = malloc(8 * 127);
-  int i;
-  
-  i = 0;
-  while (i < 127)
-    f->op[i++] = invalid_option;
-  f->fd_out = 0;
-  f->op['o'] = openoutputfile;
-  f->op['p'] = handle_flags;
-  f->op['q'] = ft_flags;
-  f->op['r'] = ft_flags;
-  f->op['s'] = set_hex;
+	f->op = malloc(8 * 127);
+	i = 0;
+	while (i < 127)
+		f->op[i++] = invalid_option;
+	f->fd_out = 0;
+	f->op['o'] = openoutputfile;
+	f->op['p'] = handle_flags;
+	f->op['q'] = ft_flags;
+	f->op['r'] = ft_flags;
+	f->op['s'] = set_hex;
 	f->op['e'] = handle_flags;
 	f->op['d'] = handle_flags;
 	f->op['i'] = handle_file;

@@ -71,7 +71,13 @@ void				ft_des(t_flags *f)
 	generate_keys_des(f);
 	while (8 == (f->ret = read(f->fd, buf, 8)))
 	{
-	  des_each_block(f, buf);
+		handle_shit(buf, f);
+		buf[f->ret] = '\0';
+		f->file = buf;
+		initial_perm(f);
+		ft_16_rounds(f);
+		final_perm(f);	
+		(f->a_op && !f->decrypt) ? (print_cipherb64(f, 0)) : (print_cipher(f));
 		i++;
 	}
 	if (!f->decrypt)
@@ -102,17 +108,48 @@ void			ft_des_decrypt(t_flags *f)
 	f->ret = read(f->fd, buf, 8);
 	while (8 == (f->ret2 = read(f->fd, buf2, 8)))
 	{
-	  dec_each_block(f, buf, buf2);
+		handle_shit(buf, f);
+		buf[f->ret] = '\0';
+		f->file = buf;
+		initial_perm(f);
+		ft_16_rounds(f);
+		final_perm(f);
+		if(!f->ecb)
+		{
+			f->x ^= f->pt_carry;
+		}
+		(print_cipher(f));//********
+		buf2tobuf(buf, buf2);
+		f->ret = f->ret2;
 		i++;
 	}
 	if (f->ret2 <= 1 || (f->ret2 ==2 && buf2[0] == '\0' && buf2[1] == '\0'))
 		f->flush = 1;
-	dec_each_block2(f, buf, buf2);
+	handle_shit(buf, f);
+	buf[f->ret] = '\0';
+	f->file = buf;
+	initial_perm(f);
+	ft_16_rounds(f);
+	final_perm(f);
+	if(!f->ecb)
+	{
+		f->x ^= f->pt_carry;
+	}
 	(print_cipher(f));
 	return ;
 	if (f->ret2 > 1 && !(buf2[0] == '\0' && buf2[1] == '\0'))
 	{
-	  dec_each_block3(f, buf, buf2);
+		f->flush = 1;
+		handle_shit(buf2, f);
+		buf2[f->ret2] = '\0';
+		f->file = buf2;
+		initial_perm(f);
+		ft_16_rounds(f);
+		final_perm(f);
+		if(!f->ecb)
+		{
+			f->x ^= f->pt_carry;
+		}
 	(print_cipher(f));//**********
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jkellehe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 18:00:15 by jkellehe          #+#    #+#             */
-/*   Updated: 2019/01/16 16:59:08 by jkellehe         ###   ########.fr       */
+/*   Updated: 2019/05/03 00:55:17 by jkellehe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 # define HACHE_H
 # define TWO_FIFTY(c) (c != 3 && c != 4)
 # define OLD(f) (f->alg != base64)
-# define HEX(f) ((f >= '0' and f <= '9') || (f >= 'A' && f <= 'Z') || (f >= 'a' && f <= 'z'))
+# define HEX2(f) ((f >= 'a' && f <= 'z'))
+# define HEX(f) ((f >= '0' and f <= '9') || (f >= 'A' && f <= 'Z') || HEX2(f))
 # define NOT_DES(f) (f != ft_des && f != ft_des_ecb)
 # define DES(a) (a[0] == 'd' && a[1] == 'e' && a[2] == 's')
-# define B64(a) (a[0] == 'b' && a[1] == 'a' && a[2] == 's' && a[3] == 'e' && a[4] == '6' && a[5] == '4')
+# define B642(a) (a[5] == '4' && a[4] == '6' && a[3] == 'e')
+# define B64(a) (a[0] == 'b' && a[1] == 'a' && a[2] == 's' && B642(a))
 # include <sys/types.h>
 # include <sys/uio.h>
 # include <sys/stat.h>
@@ -32,44 +34,44 @@
 typedef struct s_ap				t_flags;
 struct							s_ap
 {
-  uint8_t				is_iv;
-  uint32_t				orig_len_des;
-  uint32_t				fd_out;
-  uint64_t				prev;
-  uint64_t				pt_carry;
-  int					ret2;
-  int					dec_fd;
-  uint8_t					decrypt;  
-  uint8_t						first;
-  uint64_t						salt;
-  char							*password;
-  uint64_t						orig_salt;
-  uint8_t flush;
-  uint8_t	a_op;
-  int argc;
-  uint8_t		invalid_key;
-  	char						recent_letter;
-  	uint8_t						decode;
-  uint8_t				ecb;
-  uint64_t				x_hold;
-  uint64_t				x;
-  uint32_t		l;
-  uint32_t		f_hold;
-uint32_t		ar;
-  uint64_t	ex_r;
-  uint64_t		*keys;
-  uint64_t		in_key;
-  void (**op) (t_flags *f, char **a);
+	uint8_t						is_iv;
+	uint32_t					orig_len_des;
+	uint32_t					fd_out;
+	uint64_t					prev;
+	uint64_t					pt_carry;
+	int							ret2;
+	int							dec_fd;
+	uint8_t						decrypt;
+	uint8_t						first;
+	uint64_t					salt;
+	char						*password;
+	uint64_t					orig_salt;
+	uint8_t						flush;
+	uint8_t						a_op;
+	int							argc;
+	uint8_t						invalid_key;
+	char						recent_letter;
+	uint8_t						decode;
+	uint8_t						ecb;
+	uint64_t					x_hold;
+	uint64_t					x;
+	uint32_t					l;
+	uint32_t					f_hold;
+	uint32_t					ar;
+	uint64_t					ex_r;
+	uint64_t					*keys;
+	uint64_t					in_key;
+	void						(**op) (t_flags *f, char **a);
 	uint64_t					s0;
 	uint64_t					s1;
 	int							fd2;
 	char						*name;
 	void						(*alg) (t_flags *f);
 	int							fd;
-	uint32_t							ret;
+	uint32_t					ret;
 	char						*file;
 	char						*algy;
-	int						hold;
+	int							hold;
 	uint32_t					*kk;
 	uint8_t						is_ne;
 	uint8_t						never;
@@ -81,7 +83,7 @@ uint32_t		ar;
 	uint32_t					*mm;
 	uint32_t					*s;
 	uint64_t					*k;
-  	uint64_t					orig_len;
+	uint64_t					orig_len;
 	uint8_t						i;
 	uint32_t					a_fin;
 	uint32_t					b_fin;
@@ -127,47 +129,56 @@ uint32_t		ar;
 	uint32_t					temp2;
 	uint32_t					*w;
 	uint32_t					b_ind;
-  
 };
 
-void	assign_base64(char *x);
-unsigned char   find_index(char buf);
-void    print_decode64(unsigned int x, int old_i, t_flags *f);
-unsigned char   reverse_bits_char(unsigned char x);
-uint64_t        					comp_dbox(uint64_t b);
-uint32_t        					lr_28(uint32_t n, uint32_t d);
-void    parity_drop(t_flags *f);
-void set_hex(t_flags *f, char **a);
-int     print_cipher(t_flags *f);
-void    print_cipherb64(t_flags *f, int i);
-void   handle_shit(char *buf, t_flags *f);
-void    s_boxes(t_flags *f);
-void    expansion_des(t_flags *f);
-void str8_d_box(t_flags *f);
-void swap_lr(t_flags *f);
-void    buf2tobuf(char *buf, char *buf2);
-void handle_pass(t_flags *f, char **a);
-void    handle_flags(t_flags *f, char **a);
-void    buf2tobuf(char *buf, char *buf2);
-void swap_lr(t_flags *f);
-void str8_d_box(t_flags *f);
-void    reverse_half_bytes(t_flags *f);
-void pkcs7_pad(t_flags *f);
-void set_hex(t_flags *f, char **a);
-unsigned int reverse_bits(unsigned int x);
-void    ft_des_decrypt(t_flags *f);
-void decode_base64(t_flags *f);
-void    handle_b64(t_flags *f, char **a);
-void unpack_base64(t_flags *f);
-void                    other_ass_op(t_flags *f);
-void    handle_file(t_flags *f, char **a);
-void HMAC_md5(char *c, t_flags *f);
-void                            help_me2(t_flags *f);
-void    handle_pass(t_flags *f, char **a);
-int                             			optns(t_flags *f, char **argv);
+void                                                    dec_each_block3(t_flags *f, char *buf, char *buf2);
+void                                                    dec_each_block2(t_flags *f, char *buf, char *buf2);
+void							des_each_block(t_flags *f, char *buf);
+void                            			ft_16_rounds(t_flags *f);
+void							dec_each_block(t_flags *f, char *buf, char *buf2);
+void							openoutputfile(t_flags *f, char **a);
+void							invalid_option(t_flags *f, char **a);
+void							write_salt(t_flags *f);
+int							help_handle_des(t_flags *f, char **a);
+void							assign_base64(char *x);
+unsigned char					find_index(char buf);
+void							print_decode64(unsigned int x, int old_i,
+								t_flags *f);
+unsigned char					reverse_bits_char(unsigned char x);
+uint64_t						comp_dbox(uint64_t b);
+uint32_t						lr_28(uint32_t n, uint32_t d);
+void							parity_drop(t_flags *f);
+void							set_hex(t_flags *f, char **a);
+int								print_cipher(t_flags *f);
+void							print_cipherb64(t_flags *f, int i);
+void							handle_shit(char *buf, t_flags *f);
+void							s_boxes(t_flags *f);
+void							expansion_des(t_flags *f);
+void							str8_d_box(t_flags *f);
+void							swap_lr(t_flags *f);
+void							buf2tobuf(char *buf, char *buf2);
+void							handle_pass(t_flags *f, char **a);
+void							handle_flags(t_flags *f, char **a);
+void							buf2tobuf(char *buf, char *buf2);
+void							swap_lr(t_flags *f);
+void							str8_d_box(t_flags *f);
+void							reverse_half_bytes(t_flags *f);
+void							pkcs7_pad(t_flags *f);
+void							set_hex(t_flags *f, char **a);
+unsigned int					reverse_bits(unsigned int x);
+void							ft_des_decrypt(t_flags *f);
+void							decode_base64(t_flags *f);
+void							handle_b64(t_flags *f, char **a);
+void							unpack_base64(t_flags *f);
+void							other_ass_op(t_flags *f);
+void							handle_file(t_flags *f, char **a);
+void							hmac_md5(char *c, t_flags *f);
+void							help_me2(t_flags *f);
+void							handle_pass(t_flags *f, char **a);
+int								optns(t_flags *f, char **argv);
 void							ft_des_ecb(t_flags *f);
-void    						flip_buf(char *buf);
-void 							reverse_four_bytes(char *x);
+void							flip_buf(char *buf);
+void							reverse_four_bytes(char	*x);
 void							putstr_nonline(char *hold);
 char							*getchar_64(char *buf);
 void							print_keys(t_flags *f);

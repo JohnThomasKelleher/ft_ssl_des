@@ -6,7 +6,7 @@
 /*   By: jkellehe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 17:14:19 by jkellehe          #+#    #+#             */
-/*   Updated: 2019/01/16 14:39:56 by jkellehe         ###   ########.fr       */
+/*   Updated: 2019/05/03 01:40:53 by jkellehe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,13 @@ t_flags				*help_main(t_flags *f)
 int					main(int argc, char **argv)
 {
 	t_flags			*f;
-	char *x;
-	char y[2];
-	
+	char			*x;
+	char			y[2];
+
 	x = 0;
 	x = NULL;
 	x = (char*)malloc(sizeof(char) * 2);
-
-	y[0]+=0;
+	y[0] += 0;
 	argv[argc] = NULL;
 	f = (t_flags*)malloc(sizeof(t_flags) * 10);
 	ass_op(f);
