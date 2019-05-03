@@ -72,12 +72,10 @@ void	ft_des(t_flags *f)
       handle_shit(buf, f);
       buf[f->ret] = '\0';
       f->file = buf;
-   
   initial_perm(f);
   ft_16_rounds(f);
-  final_perm(f);
-  
-  (f->a_op && !f->decrypt) ? (print_cipherB64(f)) : (print_cipher(f));
+  final_perm(f);  
+  (f->a_op && !f->decrypt) ? (print_cipherb64(f, 0)) : (print_cipher(f));
   i++;
     }
   if (!f->decrypt)
@@ -92,7 +90,7 @@ initial_perm(f);
   final_perm(f);
   
   f->flush = 1;
-    (f->a_op) ? (print_cipherB64(f)) : (print_cipher(f));
+  (f->a_op) ? (print_cipherb64(f, 0)) : (print_cipher(f));
     }
 }
 

@@ -1,12 +1,31 @@
 
--output to file(header with salt?)
--INIT -OP TO NULL
+**-output to file(header with salt?)
+**-INIT -OP TO NULL
 
--parsing and troubleshooting
+**-parsing and troubleshooting
 
--norming and leaks
--corrections
-
-
+**-norming and leaks
+**-corrections
 
 
+
+
+
+
+cbc works, but cbc with password doesnt.  can compare against my own program
+
+
+./ft_ssl des-cbc -a -i main.c -k 7004B30DBAE5FA0F -v FCBDA16382DCE8DC
+
+openssl des-cbc -a -in main.c -pass pass:pword -S 5817787817 -p
+
+./ft_ssl des-cbc -a -i main.c -p pword -s 5817787817
+
+
+
+
+everything works**
+	   -tests after norming: python script, 
+	   -file output
+	   - a/not a ecb/cbc/ -e/d i/o all with password
+	     -also check random salt by running random with mine and manual with openssl

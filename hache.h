@@ -32,7 +32,9 @@
 typedef struct s_ap				t_flags;
 struct							s_ap
 {
-  //uin8_t				first;
+  uint8_t				is_iv;
+  uint32_t				orig_len_des;
+  uint32_t				fd_out;
   uint64_t				prev;
   uint64_t				pt_carry;
   int					ret2;
@@ -79,7 +81,7 @@ uint32_t		ar;
 	uint32_t					*mm;
 	uint32_t					*s;
 	uint64_t					*k;
-	uint64_t					orig_len;
+  	uint64_t					orig_len;
 	uint8_t						i;
 	uint32_t					a_fin;
 	uint32_t					b_fin;
@@ -128,10 +130,34 @@ uint32_t		ar;
   
 };
 
+void	assign_base64(char *x);
+unsigned char   find_index(char buf);
+void    print_decode64(unsigned int x, int old_i, t_flags *f);
+unsigned char   reverse_bits_char(unsigned char x);
+uint64_t        					comp_dbox(uint64_t b);
+uint32_t        					lr_28(uint32_t n, uint32_t d);
+void    parity_drop(t_flags *f);
+void set_hex(t_flags *f, char **a);
+int     print_cipher(t_flags *f);
+void    print_cipherb64(t_flags *f, int i);
+void   handle_shit(char *buf, t_flags *f);
+void    s_boxes(t_flags *f);
+void    expansion_des(t_flags *f);
+void str8_d_box(t_flags *f);
+void swap_lr(t_flags *f);
+void    buf2tobuf(char *buf, char *buf2);
+void handle_pass(t_flags *f, char **a);
+void    handle_flags(t_flags *f, char **a);
+void    buf2tobuf(char *buf, char *buf2);
+void swap_lr(t_flags *f);
+void str8_d_box(t_flags *f);
+void    reverse_half_bytes(t_flags *f);
+void pkcs7_pad(t_flags *f);
+void set_hex(t_flags *f, char **a);
 unsigned int reverse_bits(unsigned int x);
 void    ft_des_decrypt(t_flags *f);
 void decode_base64(t_flags *f);
-void    handle_B64(t_flags *f, char **a);
+void    handle_b64(t_flags *f, char **a);
 void unpack_base64(t_flags *f);
 void                    other_ass_op(t_flags *f);
 void    handle_file(t_flags *f, char **a);

@@ -36,11 +36,11 @@ void	write_salt(t_flags *f)
   b = (uint64_t*)buf;
   flip_buf(buf);
   f->x = b[0];
-  (f->a_op) ? (print_cipherB64(f)) : (print_cipher(f));
+  (f->a_op) ? (print_cipherb64(f, 0)) : (print_cipher(f));
   //flip_buf((char*)&f->orig_salt);
   f->x = f->orig_salt;
   //flip_buf((char*)&f->orig_salt);
-  (f->a_op) ? (print_cipherB64(f)) : (print_cipher(f));
+  (f->a_op) ? (print_cipherb64(f, 0)) : (print_cipher(f));
   f->x = hold;
   f->orig_len_des = 20;
 }
@@ -119,6 +119,9 @@ void    handle_des(t_flags *f, char **a)
   //printf("salt: %llx\n", f->orig_salt);
   //printf("key: %llX\n, iv: %llX\n", f->in_key, f->x);
   (f->alg) ?  (f->alg(f)) : (0);
+  remove("./del");
+  remove("./del2");
+  remove("./del3");
 }
 
 void   handle_shit(char *buf, t_flags *f)

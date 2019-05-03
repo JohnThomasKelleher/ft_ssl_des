@@ -12,7 +12,7 @@
 
 #include "hache.h"
 
-void			help_set_hex(t_flags *f, char **a, uint64_t ret)
+void			help_set_hex(t_flags *f, char **a, int ret)
 {
 	f->x = (a[f->i][1] == 'v') ? (ret) : (f->x);
 	f->is_iv = (a[f->i][1] == 'v') ? (1) : (f->is_iv);
