@@ -7,16 +7,16 @@ void	ft_16_rounds(t_flags *f)
   while(i < 16)
     {
     
-      expansion_des(f); //does expansion from f->r to f->ex_r
+      expansion_des(f);
       if (f->decrypt)
 	f->ex_r ^= f->keys[(15-i)];
       else
 	f->ex_r ^= f->keys[i];
-      s_boxes(f); //does sboxes to go from f->ex_r to f->f_hold
-      str8_d_box(f); //does straight dboxing on f_hold
+      s_boxes(f);
+      str8_d_box(f);
       f->l ^= f->f_hold;
       if (i != 15)
-	swap_lr(f); //swap left and right
+	swap_lr(f);
       i++;
     }
 }
@@ -53,9 +53,16 @@ void	ft_des(t_flags *f)
 {
   char buf[9];
   int i = 0;
+
   if (f->decrypt)
     {
       ft_des_decrypt(f);
+      return ;
+    }
+  //printf("f->p: %X, f->ecb: %hhu, f->x: %llX", f->p, f->ecb, f->x);
+  if (!f->p && !f->ecb && !f->is_iv)
+    {
+      write(1, "iv undefined\n", 13);
       return ;
     }
   f->keys = (uint64_t*)malloc(sizeof(int) * 17);

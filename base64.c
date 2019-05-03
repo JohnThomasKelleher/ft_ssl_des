@@ -122,8 +122,6 @@ void	print_decode64(unsigned int x, int old_i, t_flags *f)
   //printf("hold: %u old_i: %d\n", x, old_i);
 
   int i = old_i -2;
-  //(f->decrypt) ? (
-  //int stop = old_i - 1;
   f->dec_fd = (f->dec_fd == 0) ? (1) : (f->dec_fd);
   while (i >= 0)
     {

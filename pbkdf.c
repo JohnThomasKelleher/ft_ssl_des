@@ -95,6 +95,10 @@ void handle_pass(t_flags *f, char **a)
   f->in_key += f->b_fin;
   f->in_key <<= 32;
   f->in_key += f->a_fin;
+  f->x += f->d_fin;
+  f->x <<= 32;
+  f->x += f->c_fin;
+  flip_buf((char*)&f->x);
   flip_buf((char*)&f->in_key);
   //printf("key=%llX\n", f->in_key);
 	 free(x[0]);

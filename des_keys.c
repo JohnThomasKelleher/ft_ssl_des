@@ -28,6 +28,7 @@ void set_hex(t_flags *f, char **a)
       i++;
     }
   f->x = (a[f->i][1] == 'v') ? (ret) : (f->x);
+  f->is_iv = (a[f->i][1] == 'v') ? (1) : (f->is_iv);
   f->in_key = (a[f->i][1] == 'k') ? (ret) : (f->in_key);
   f->orig_salt = (a[f->i][1] == 's') ? (ret) : (f->orig_salt);
 }

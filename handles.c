@@ -16,7 +16,7 @@ void    handle_flags(t_flags *f, char **a)
 
 void    handle_file(t_flags *f, char **a)
 {
-  if (!(f->fd = open(a[(f->i + 1)], O_RDONLY)))
+  if (0 > (f->fd = open(a[(f->i + 1)], O_RDONLY)))
     {
       ft_printf("sorry, no file there\n");
       return ;
@@ -87,6 +87,7 @@ void    handle_des(t_flags *f, char **a)
 {
   int hold_fd;
 
+  f->is_iv = 0;
   f->fd_out = 1;
   f->a_op = 0;
   hold_fd = 0;
@@ -116,6 +117,7 @@ void    handle_des(t_flags *f, char **a)
       f->fd = hold_fd;
     }
   //printf("salt: %llx\n", f->orig_salt);
+  //printf("key: %llX\n, iv: %llX\n", f->in_key, f->x);
   (f->alg) ?  (f->alg(f)) : (0);
 }
 
