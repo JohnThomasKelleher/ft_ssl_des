@@ -133,6 +133,7 @@ struct							s_ap
 
 void                                                    dec_each_block3(t_flags *f, char *buf, char *buf2);
 void                                                    dec_each_block2(t_flags *f, char *buf, char *buf2);
+void							des_each_block2(t_flags *f, char *buf);
 void							des_each_block(t_flags *f, char *buf);
 void                            			ft_16_rounds(t_flags *f);
 void							dec_each_block(t_flags *f, char *buf, char *buf2);
@@ -184,8 +185,8 @@ char							*getchar_64(char *buf);
 void							print_keys(t_flags *f);
 void							ass_dig(int *dig);
 void							handle_des(t_flags *f, char **a);
-void							initial_perm(t_flags *f);
-void							final_perm(t_flags *f);
+void							initial_perm(t_flags *f, int i, uint64_t rev);
+void							final_perm(t_flags *f, int i, uint64_t rev);
 void							ft_des(t_flags *f);
 uint8_t							s1(uint8_t in);
 uint8_t							s2(uint8_t in);

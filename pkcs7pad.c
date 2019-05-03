@@ -1,14 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pkcs7pad.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkellehe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/03 02:49:00 by jkellehe          #+#    #+#             */
+/*   Updated: 2019/05/03 02:49:04 by jkellehe         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "hache.h"
 
-void pkcs7_pad(t_flags *f)
+void			pkcs7_pad(t_flags *f)
 {
-  uint8_t num = (8 - f->ret);
-  int i = f->ret;
+	uint8_t		num;
+	int			i;
 
-  while (i < 8)
-    {
-      f->file[i] = num;
-      i++;
-    }
+	num = (8 - f->ret);
+	i = f->ret;
+	while (i < 8)
+	{
+		f->file[i] = num;
+		i++;
+	}
 }

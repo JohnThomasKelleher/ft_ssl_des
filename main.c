@@ -37,12 +37,8 @@ t_flags				*help_main(t_flags *f)
 int					main(int argc, char **argv)
 {
 	t_flags			*f;
-	char			*x;
 	char			y[2];
 
-	x = 0;
-	x = NULL;
-	x = (char*)malloc(sizeof(char) * 2);
 	y[0] += 0;
 	argv[argc] = NULL;
 	f = (t_flags*)malloc(sizeof(t_flags) * 10);

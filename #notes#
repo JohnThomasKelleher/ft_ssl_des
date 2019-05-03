@@ -31,6 +31,6 @@ everything works**
 	     -also check random salt by running random with mine and manual with openssl
 
 
-to add to makefile:
-   base64_flippers.c
-   
+editing:
+
+print_cipher

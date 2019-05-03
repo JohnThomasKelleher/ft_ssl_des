@@ -6,7 +6,7 @@
 /*   By: jkellehe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 17:14:19 by jkellehe          #+#    #+#             */
-/*   Updated: 2019/01/16 14:40:38 by jkellehe         ###   ########.fr       */
+/*   Updated: 2019/05/03 02:28:50 by jkellehe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void				help_me(t_flags *f)
 	f->b = f->b_fin;
 	f->c = f->c_fin;
 	f->d = f->d_fin;
-	//(f->first) && printf("a: %x, b: %x, c: %x d: %x\n", f->a, f->b, f->c, f->d);
 }
 
 void				md5_hash(t_flags *f)
@@ -40,7 +39,6 @@ void				md5_hash(t_flags *f)
 		ff = (i >= 48 && i <= 63) ? (f->c ^ (f->b | (~f->d))) : (ff);
 		g = (i >= 48 && i <= 63) ? ((7 * i) % 16) : (g);
 		ff = ff + f->a + f->kk[i] + f->mm[g];
-		//(f->first) && printf("a: %x, b: %x, c: %x d: %x ff: %x kk[i]: %x\n", f->a, f->b, f->c,f->d, ff, f->kk[i]);
 		f->a = f->d;
 		f->d = f->c;
 		f->c = f->b;

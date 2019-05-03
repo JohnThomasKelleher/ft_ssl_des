@@ -31,6 +31,7 @@ void			ft_putmd5(char *catch, t_flags *f)
 	else if (!f->p)
 		(f->r && !f->q) ? (ft_printf(" %s", f->name)) : (0);
 	ft_printf("\n");
+	free(catch);
 }
 
 void			print256(char *p, t_flags *f)

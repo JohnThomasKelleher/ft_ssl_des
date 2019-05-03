@@ -6,7 +6,7 @@
 /*   By: jkellehe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/09 17:14:19 by jkellehe          #+#    #+#             */
-/*   Updated: 2019/01/16 14:46:07 by jkellehe         ###   ########.fr       */
+/*   Updated: 2019/05/03 03:44:35 by jkellehe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void		ft_quiet(t_flags *f, char **argv)
 
 void		ft_stdin(t_flags *f, char **argv)
 {
-  f->decode = (f->recent_letter == 'd') ? (1) : (0);
+	f->decode = (f->recent_letter == 'd') ? (1) : (0);
 	argv += 0;
 	f->fd = 0;
 	f->never = 0;
@@ -63,7 +63,6 @@ void		ft_strin(t_flags *f, char **argv)
 	f->name = argv[f->i];
 	f->st = 1;
 	f->fd = (uint32_t)open("./del", O_RDWR | O_CREAT, 00777);
-	//if (OLD(f))
 	ft_writer(f, argv);
 	f->i = 0;
 	f->alg(f);

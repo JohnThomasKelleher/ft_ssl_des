@@ -1,24 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   s_box.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkellehe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/03 02:54:22 by jkellehe          #+#    #+#             */
+/*   Updated: 2019/05/03 02:54:54 by jkellehe         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "hache.h"
 
-void    s_boxes(t_flags *f)
+void				s_boxes(t_flags *f)
 {
-  uint8_t (*boxes[8]) (uint8_t) = { s1, s2, s3, s4, s5, s6, s7, s8 };
-  int i = 7;
-  uint8_t in = 0;
-  //f->ar = 0;
-  while (i > -1)
-    {
-      in = (f->ex_r % 64);
-      f->ex_r /= 64;
-      in = boxes[i](in);
-      f->f_hold <<= 4;
-      f->f_hold += in;
+	static uint8_t	(*boxes[8]) (uint8_t) = { s1, s2, s3, s4, s5, s6, s7, s8 };
+	int				i;
+	uint8_t			in;
 
-      i--;
-    }
-  //printf("before flipping half bytes: %x\n", f->f_hold);
-  reverse_half_bytes(f);
-
+	i = 7;
+	in = 0;
+	while (i > -1)
+	{
+		in = (f->ex_r % 64);
+		f->ex_r /= 64;
+		in = boxes[i](in);
+		f->f_hold <<= 4;
+		f->f_hold += in;
+		i--;
+	}
+	reverse_half_bytes(f);
 }
-

@@ -73,19 +73,22 @@ void				print_cipherb64(t_flags *f, int i)
 int					print_cipher(t_flags *f)
 {
 	int				i;
-	uint64_t		x_val;
+	uint64_t		*x_val;
 	char			*x;
 	int				end;
 
 	i = 0;
+	x_val = (uint64_t*)malloc(sizeof(uint64_t) * 3);
 	end = 8;
-	x_val = f->x;
-	x = (char*)&x_val;
+	x_val[0] = f->x;
+	x = (char*)x_val;
 	if (f->decrypt && f->flush)
 	{
 		(end = (8 - x[0]));
 	}
 	flip_buf(x);
+	end = (end > 8) ? (8) : (end);
+	end = (end < 0) ? (0) : (end);
 	while (i < end)
 	{
 		write(f->fd_out, &x[i], 1);

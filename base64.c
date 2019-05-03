@@ -87,6 +87,7 @@ void				base64(t_flags *f)
 		buf[1] = (f->ret == 1) ? (0) : (buf[1]);
 		hold = getchar_64(buf);
 		putstr_nonline(hold);
+		free(hold);
 	}
 	write(1, "\n", 1);
 }
